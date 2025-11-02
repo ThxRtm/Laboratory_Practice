@@ -7,7 +7,7 @@
         {
             "name": "Cortex Debug",
             "cwd": "${workspaceFolder}",
-            "executable": "./bin/executable.elf",
+            "executable": "./build_F411RE/STM32F411RE.elf",
             "request": "launch",
             "type": "cortex-debug",
             "runToEntryPoint": "main",
