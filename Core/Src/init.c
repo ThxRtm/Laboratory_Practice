@@ -1,4 +1,4 @@
-#include "init.h"
+/*#include "init.h"
 void GPIO_Init(void)
 {
     // Включение тактирования портов
@@ -19,3 +19,4 @@ void GPIO_Init(void)
     CLR_BIT(GPIOB_MODER, (3 << (6 * 2)));     // PB6
     CLR_BIT(GPIOD_MODER, (3 << (3 * 2)));     // PD3
 }
+*/

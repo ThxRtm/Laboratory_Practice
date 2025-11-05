@@ -1,7 +1,18 @@
-#ifndef INIT_H
+/*#ifndef INIT_H
 #define INIT_H
 
-// Адреса и маски для GPIO (под STM32F4)
+// Адрес переферии для купленной платы F411RE
+#define RCC_AHB1ENR             
+#define AHB1PERIPH_BASE         (PERIPH_BASE + 0x00020000UL)
+
+//Адреса GPIO
+#define GPIOA                   (AHB1PERIPH_BASE + 0x0000UL)
+#define GPIOB                   (AHB1PERIPH_BASE + 0x0400UL)
+#define GPIOB                   (AHB1PERIPH_BASE + 0x0800UL)
+
+//RCC
+
+
 #define RCC_GPIOA_EN        (*(volatile uint32_t*)0x40023830)
 #define RCC_GPIOB_EN        (*(volatile uint32_t*)0x40023830)
 #define RCC_GPIOC_EN        (*(volatile uint32_t*)0x40023830)
@@ -24,3 +35,5 @@
 void GPIO_Init(void);
 
 #endif
+
+*/

@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccxb3Qg8.s 			page 1
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -20,37 +20,185 @@ ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccxb3Qg8.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.file 1 "Core/Src/main.c"
-  20              		.section	.text.main,"ax",%progbits
+  20              		.section	.text.delay,"ax",%progbits
   21              		.align	1
-  22              		.global	main
+  22              		.global	delay
   23              		.syntax unified
   24              		.thumb
   25              		.thumb_func
-  27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** int main(void){
-  29              		.loc 1 1 15 view -0
-  30              		.cfi_startproc
-  31              		@ Volatile: function does not return.
-  32              		@ args = 0, pretend = 0, frame = 0
+  27              	delay:
+  28              	.LVL0:
+  29              	.LFB0:
+   1:Core/Src/main.c **** #include <stdint.h>
+   2:Core/Src/main.c **** 
+   3:Core/Src/main.c **** void delay(volatile uint32_t count) {
+  30              		.loc 1 3 37 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 8
   33              		@ frame_needed = 0, uses_anonymous_args = 0
   34              		@ link register save eliminated.
-  35              	.L2:
-   2:Core/Src/main.c ****     while (1){}
-  36              		.loc 1 2 5 view .LVU1
-  37              		.loc 1 2 15 view .LVU2
-  38              		.loc 1 2 11 view .LVU3
-  39 0000 FEE7     		b	.L2
-  40              		.cfi_endproc
-  41              	.LFE0:
-  43              		.text
-  44              	.Letext0:
-ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccxb3Qg8.s 			page 2
+  35              		.loc 1 3 37 is_stmt 0 view .LVU1
+  36 0000 82B0     		sub	sp, sp, #8
+  37              	.LCFI0:
+  38              		.cfi_def_cfa_offset 8
+  39 0002 0190     		str	r0, [sp, #4]
+   4:Core/Src/main.c ****     while(count--) {
+  40              		.loc 1 4 5 is_stmt 1 view .LVU2
+  41              		.loc 1 4 10 is_stmt 0 view .LVU3
+  42 0004 00E0     		b	.L2
+  43              	.L3:
+   5:Core/Src/main.c ****         __asm("nop");
+  44              		.loc 1 5 9 is_stmt 1 view .LVU4
+  45              		.syntax unified
+  46              	@ 5 "Core/Src/main.c" 1
+  47 0006 00BF     		nop
+  48              	@ 0 "" 2
+  49              		.thumb
+  50              		.syntax unified
+  51              	.L2:
+   4:Core/Src/main.c ****     while(count--) {
+  52              		.loc 1 4 11 view .LVU5
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s 			page 2
+
+
+   4:Core/Src/main.c ****     while(count--) {
+  53              		.loc 1 4 16 is_stmt 0 view .LVU6
+  54 0008 019B     		ldr	r3, [sp, #4]
+  55 000a 5A1E     		subs	r2, r3, #1
+  56 000c 0192     		str	r2, [sp, #4]
+   4:Core/Src/main.c ****     while(count--) {
+  57              		.loc 1 4 11 view .LVU7
+  58 000e 002B     		cmp	r3, #0
+  59 0010 F9D1     		bne	.L3
+   6:Core/Src/main.c ****     }
+   7:Core/Src/main.c **** }
+  60              		.loc 1 7 1 view .LVU8
+  61 0012 02B0     		add	sp, sp, #8
+  62              	.LCFI1:
+  63              		.cfi_def_cfa_offset 0
+  64              		@ sp needed
+  65 0014 7047     		bx	lr
+  66              		.cfi_endproc
+  67              	.LFE0:
+  69              		.section	.text.main,"ax",%progbits
+  70              		.align	1
+  71              		.global	main
+  72              		.syntax unified
+  73              		.thumb
+  74              		.thumb_func
+  76              	main:
+  77              	.LFB1:
+   8:Core/Src/main.c **** 
+   9:Core/Src/main.c **** int main(void) {
+  78              		.loc 1 9 16 is_stmt 1 view -0
+  79              		.cfi_startproc
+  80              		@ Volatile: function does not return.
+  81              		@ args = 0, pretend = 0, frame = 0
+  82              		@ frame_needed = 0, uses_anonymous_args = 0
+  83 0000 08B5     		push	{r3, lr}
+  84              	.LCFI2:
+  85              		.cfi_def_cfa_offset 8
+  86              		.cfi_offset 3, -8
+  87              		.cfi_offset 14, -4
+  10:Core/Src/main.c ****     // Включить тактирование порта A
+  11:Core/Src/main.c ****     *(uint32_t*)(0x40023800UL + 0x30UL) |= 0x02;
+  88              		.loc 1 11 5 view .LVU10
+  89 0002 144A     		ldr	r2, .L8
+  90 0004 D2F83038 		ldr	r3, [r2, #2096]
+  91              		.loc 1 11 41 is_stmt 0 view .LVU11
+  92 0008 43F00203 		orr	r3, r3, #2
+  93 000c C2F83038 		str	r3, [r2, #2096]
+  12:Core/Src/main.c **** 
+  13:Core/Src/main.c ****     // Настройка PA5 как выход
+  14:Core/Src/main.c ****     *(uint32_t*)(0x40020000UL + 0x00UL) &= ~(3 << (5 * 2)); // Очистить MODER пина 5
+  94              		.loc 1 14 5 is_stmt 1 view .LVU12
+  95 0010 114B     		ldr	r3, .L8+4
+  96 0012 1A68     		ldr	r2, [r3]
+  97              		.loc 1 14 41 is_stmt 0 view .LVU13
+  98 0014 22F44062 		bic	r2, r2, #3072
+  99 0018 1A60     		str	r2, [r3]
+  15:Core/Src/main.c ****     *(uint32_t*)(0x40020000UL + 0x00UL) |= (1 << (5 * 2));  // Установить режим outp
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s 			page 3
+
+
+ 100              		.loc 1 15 5 is_stmt 1 view .LVU14
+ 101              		.loc 1 15 41 is_stmt 0 view .LVU15
+ 102 001a 42F48062 		orr	r2, r2, #1024
+ 103 001e 1A60     		str	r2, [r3]
+  16:Core/Src/main.c **** 
+  17:Core/Src/main.c ****     // Настройка скорости порта PA5
+  18:Core/Src/main.c ****     *(uint32_t*)(0x40020000UL + 0x08UL) |= (1 << (5 * 2));
+ 104              		.loc 1 18 5 is_stmt 1 view .LVU16
+ 105 0020 9A68     		ldr	r2, [r3, #8]
+ 106              		.loc 1 18 41 is_stmt 0 view .LVU17
+ 107 0022 42F48062 		orr	r2, r2, #1024
+ 108 0026 9A60     		str	r2, [r3, #8]
+  19:Core/Src/main.c **** 
+  20:Core/Src/main.c ****     // Отключение подтяжки
+  21:Core/Src/main.c ****     *(uint32_t*)(0x40020000UL + 0x0CUL) &= ~(3 << (5 * 2));
+ 109              		.loc 1 21 5 is_stmt 1 view .LVU18
+ 110 0028 DA68     		ldr	r2, [r3, #12]
+ 111              		.loc 1 21 41 is_stmt 0 view .LVU19
+ 112 002a 22F44062 		bic	r2, r2, #3072
+ 113 002e DA60     		str	r2, [r3, #12]
+ 114              	.L6:
+  22:Core/Src/main.c **** 
+  23:Core/Src/main.c ****     while(1) {
+ 115              		.loc 1 23 5 is_stmt 1 view .LVU20
+  24:Core/Src/main.c ****         // Включить PA5
+  25:Core/Src/main.c ****         *(uint32_t*)(0x40020000UL + 0x14UL) |= (1 << 5);
+ 116              		.loc 1 25 9 view .LVU21
+ 117 0030 094C     		ldr	r4, .L8+4
+ 118 0032 6369     		ldr	r3, [r4, #20]
+ 119              		.loc 1 25 45 is_stmt 0 view .LVU22
+ 120 0034 43F02003 		orr	r3, r3, #32
+ 121 0038 6361     		str	r3, [r4, #20]
+  26:Core/Src/main.c ****         delay(1000000);
+ 122              		.loc 1 26 9 is_stmt 1 view .LVU23
+ 123 003a 084D     		ldr	r5, .L8+8
+ 124 003c 2846     		mov	r0, r5
+ 125 003e FFF7FEFF 		bl	delay
+ 126              	.LVL1:
+  27:Core/Src/main.c **** 
+  28:Core/Src/main.c ****         // Выключить PA5
+  29:Core/Src/main.c ****         *(uint32_t*)(0x40020000UL + 0x14UL) &= ~(1 << 5);
+ 127              		.loc 1 29 9 view .LVU24
+ 128 0042 6369     		ldr	r3, [r4, #20]
+ 129              		.loc 1 29 45 is_stmt 0 view .LVU25
+ 130 0044 23F02003 		bic	r3, r3, #32
+ 131 0048 6361     		str	r3, [r4, #20]
+  30:Core/Src/main.c ****         delay(1000000);
+ 132              		.loc 1 30 9 is_stmt 1 discriminator 1 view .LVU26
+ 133 004a 2846     		mov	r0, r5
+ 134 004c FFF7FEFF 		bl	delay
+ 135              	.LVL2:
+  23:Core/Src/main.c ****         // Включить PA5
+ 136              		.loc 1 23 10 view .LVU27
+ 137 0050 EEE7     		b	.L6
+ 138              	.L9:
+ 139 0052 00BF     		.align	2
+ 140              	.L8:
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s 			page 4
+
+
+ 141 0054 00300240 		.word	1073885184
+ 142 0058 00000240 		.word	1073872896
+ 143 005c 40420F00 		.word	1000000
+ 144              		.cfi_endproc
+ 145              	.LFE1:
+ 147              		.text
+ 148              	.Letext0:
+ 149              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 150              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\Thx\AppData\Local\Temp\ccxb3Qg8.s:21     .text.main:00000000 $t
-C:\Users\Thx\AppData\Local\Temp\ccxb3Qg8.s:27     .text.main:00000000 main
+C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s:21     .text.delay:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s:27     .text.delay:00000000 delay
+C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s:70     .text.main:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s:76     .text.main:00000000 main
+C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s:141    .text.main:00000054 $d
 
 NO UNDEFINED SYMBOLS
