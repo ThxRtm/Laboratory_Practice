@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s 			page 1
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccOslyFX.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -31,48 +31,49 @@ ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s 			page 1
   29              	.LFB0:
    1:Core/Src/main.c **** #include <stdint.h>
    2:Core/Src/main.c **** 
-   3:Core/Src/main.c **** void delay(volatile uint32_t count) {
-  30              		.loc 1 3 37 view -0
+   3:Core/Src/main.c **** // Простая задержка для антидребезга кнопки
+   4:Core/Src/main.c **** void delay(volatile uint32_t count) {
+  30              		.loc 1 4 37 view -0
   31              		.cfi_startproc
   32              		@ args = 0, pretend = 0, frame = 8
   33              		@ frame_needed = 0, uses_anonymous_args = 0
   34              		@ link register save eliminated.
-  35              		.loc 1 3 37 is_stmt 0 view .LVU1
+  35              		.loc 1 4 37 is_stmt 0 view .LVU1
   36 0000 82B0     		sub	sp, sp, #8
   37              	.LCFI0:
   38              		.cfi_def_cfa_offset 8
   39 0002 0190     		str	r0, [sp, #4]
-   4:Core/Src/main.c ****     while(count--) {
-  40              		.loc 1 4 5 is_stmt 1 view .LVU2
-  41              		.loc 1 4 10 is_stmt 0 view .LVU3
+   5:Core/Src/main.c ****     while(count--) {
+  40              		.loc 1 5 5 is_stmt 1 view .LVU2
+  41              		.loc 1 5 10 is_stmt 0 view .LVU3
   42 0004 00E0     		b	.L2
   43              	.L3:
-   5:Core/Src/main.c ****         __asm("nop");
-  44              		.loc 1 5 9 is_stmt 1 view .LVU4
+   6:Core/Src/main.c ****         __asm("nop");
+  44              		.loc 1 6 9 is_stmt 1 view .LVU4
   45              		.syntax unified
-  46              	@ 5 "Core/Src/main.c" 1
+  46              	@ 6 "Core/Src/main.c" 1
   47 0006 00BF     		nop
   48              	@ 0 "" 2
   49              		.thumb
   50              		.syntax unified
   51              	.L2:
-   4:Core/Src/main.c ****     while(count--) {
-  52              		.loc 1 4 11 view .LVU5
-ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s 			page 2
+   5:Core/Src/main.c ****     while(count--) {
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccOslyFX.s 			page 2
 
 
-   4:Core/Src/main.c ****     while(count--) {
-  53              		.loc 1 4 16 is_stmt 0 view .LVU6
+  52              		.loc 1 5 11 view .LVU5
+   5:Core/Src/main.c ****     while(count--) {
+  53              		.loc 1 5 16 is_stmt 0 view .LVU6
   54 0008 019B     		ldr	r3, [sp, #4]
   55 000a 5A1E     		subs	r2, r3, #1
   56 000c 0192     		str	r2, [sp, #4]
-   4:Core/Src/main.c ****     while(count--) {
-  57              		.loc 1 4 11 view .LVU7
+   5:Core/Src/main.c ****     while(count--) {
+  57              		.loc 1 5 11 view .LVU7
   58 000e 002B     		cmp	r3, #0
   59 0010 F9D1     		bne	.L3
-   6:Core/Src/main.c ****     }
-   7:Core/Src/main.c **** }
-  60              		.loc 1 7 1 view .LVU8
+   7:Core/Src/main.c ****     }
+   8:Core/Src/main.c **** }
+  60              		.loc 1 8 1 view .LVU8
   61 0012 02B0     		add	sp, sp, #8
   62              	.LCFI1:
   63              		.cfi_def_cfa_offset 0
@@ -88,117 +89,252 @@ ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s 			page 1
   74              		.thumb_func
   76              	main:
   77              	.LFB1:
-   8:Core/Src/main.c **** 
-   9:Core/Src/main.c **** int main(void) {
-  78              		.loc 1 9 16 is_stmt 1 view -0
+   9:Core/Src/main.c **** 
+  10:Core/Src/main.c **** int main(void) {
+  78              		.loc 1 10 16 is_stmt 1 view -0
   79              		.cfi_startproc
-  80              		@ Volatile: function does not return.
-  81              		@ args = 0, pretend = 0, frame = 0
-  82              		@ frame_needed = 0, uses_anonymous_args = 0
-  83 0000 08B5     		push	{r3, lr}
-  84              	.LCFI2:
-  85              		.cfi_def_cfa_offset 8
-  86              		.cfi_offset 3, -8
-  87              		.cfi_offset 14, -4
-  10:Core/Src/main.c ****     // Включить тактирование порта A
-  11:Core/Src/main.c ****     *(uint32_t*)(0x40023800UL + 0x30UL) |= 0x02;
-  88              		.loc 1 11 5 view .LVU10
-  89 0002 144A     		ldr	r2, .L8
-  90 0004 D2F83038 		ldr	r3, [r2, #2096]
-  91              		.loc 1 11 41 is_stmt 0 view .LVU11
-  92 0008 43F00203 		orr	r3, r3, #2
-  93 000c C2F83038 		str	r3, [r2, #2096]
-  12:Core/Src/main.c **** 
-  13:Core/Src/main.c ****     // Настройка PA5 как выход
-  14:Core/Src/main.c ****     *(uint32_t*)(0x40020000UL + 0x00UL) &= ~(3 << (5 * 2)); // Очистить MODER пина 5
-  94              		.loc 1 14 5 is_stmt 1 view .LVU12
-  95 0010 114B     		ldr	r3, .L8+4
-  96 0012 1A68     		ldr	r2, [r3]
-  97              		.loc 1 14 41 is_stmt 0 view .LVU13
-  98 0014 22F44062 		bic	r2, r2, #3072
-  99 0018 1A60     		str	r2, [r3]
-  15:Core/Src/main.c ****     *(uint32_t*)(0x40020000UL + 0x00UL) |= (1 << (5 * 2));  // Установить режим outp
-ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s 			page 3
+  80              		@ args = 0, pretend = 0, frame = 0
+  81              		@ frame_needed = 0, uses_anonymous_args = 0
+  82 0000 38B5     		push	{r3, r4, r5, lr}
+  83              	.LCFI2:
+  84              		.cfi_def_cfa_offset 16
+  85              		.cfi_offset 3, -16
+  86              		.cfi_offset 4, -12
+  87              		.cfi_offset 5, -8
+  88              		.cfi_offset 14, -4
+  11:Core/Src/main.c ****     // Включить тактирование GPIOA и GPIOC
+  12:Core/Src/main.c ****     *(volatile uint32_t*)(0x40023800UL + 0x30UL) |= (1 << 0) | (1 << 2); // GPIOA и GPIOC
+  89              		.loc 1 12 5 view .LVU10
+  90 0002 1F4A     		ldr	r2, .L10
+  91 0004 D2F83038 		ldr	r3, [r2, #2096]
+  92              		.loc 1 12 50 is_stmt 0 view .LVU11
+  93 0008 43F00503 		orr	r3, r3, #5
+  94 000c C2F83038 		str	r3, [r2, #2096]
+  13:Core/Src/main.c **** 
+  14:Core/Src/main.c ****     // Настроить PA5 как выход (MODER5 = 01)
+  15:Core/Src/main.c ****     uint32_t moder = *(volatile uint32_t*)(0x40020000UL + 0x00UL);
+  95              		.loc 1 15 5 is_stmt 1 view .LVU12
+  96              		.loc 1 15 14 is_stmt 0 view .LVU13
+  97 0010 1C4B     		ldr	r3, .L10+4
+  98 0012 1A68     		ldr	r2, [r3]
+  99              	.LVL1:
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccOslyFX.s 			page 3
 
 
- 100              		.loc 1 15 5 is_stmt 1 view .LVU14
- 101              		.loc 1 15 41 is_stmt 0 view .LVU15
- 102 001a 42F48062 		orr	r2, r2, #1024
- 103 001e 1A60     		str	r2, [r3]
-  16:Core/Src/main.c **** 
-  17:Core/Src/main.c ****     // Настройка скорости порта PA5
-  18:Core/Src/main.c ****     *(uint32_t*)(0x40020000UL + 0x08UL) |= (1 << (5 * 2));
- 104              		.loc 1 18 5 is_stmt 1 view .LVU16
- 105 0020 9A68     		ldr	r2, [r3, #8]
- 106              		.loc 1 18 41 is_stmt 0 view .LVU17
- 107 0022 42F48062 		orr	r2, r2, #1024
- 108 0026 9A60     		str	r2, [r3, #8]
+  16:Core/Src/main.c ****     moder &= ~(3 << (5 * 2));
+ 100              		.loc 1 16 5 is_stmt 1 view .LVU14
+ 101              		.loc 1 16 11 is_stmt 0 view .LVU15
+ 102 0014 22F44062 		bic	r2, r2, #3072
+ 103              	.LVL2:
+  17:Core/Src/main.c ****     moder |=  (1 << (5 * 2));
+ 104              		.loc 1 17 5 is_stmt 1 view .LVU16
+ 105              		.loc 1 17 11 is_stmt 0 view .LVU17
+ 106 0018 42F48062 		orr	r2, r2, #1024
+ 107              	.LVL3:
+  18:Core/Src/main.c ****     *(volatile uint32_t*)(0x40020000UL + 0x00UL) = moder;
+ 108              		.loc 1 18 5 is_stmt 1 view .LVU18
+ 109              		.loc 1 18 50 is_stmt 0 view .LVU19
+ 110 001c 1A60     		str	r2, [r3]
   19:Core/Src/main.c **** 
-  20:Core/Src/main.c ****     // Отключение подтяжки
-  21:Core/Src/main.c ****     *(uint32_t*)(0x40020000UL + 0x0CUL) &= ~(3 << (5 * 2));
- 109              		.loc 1 21 5 is_stmt 1 view .LVU18
- 110 0028 DA68     		ldr	r2, [r3, #12]
- 111              		.loc 1 21 41 is_stmt 0 view .LVU19
- 112 002a 22F44062 		bic	r2, r2, #3072
- 113 002e DA60     		str	r2, [r3, #12]
- 114              	.L6:
-  22:Core/Src/main.c **** 
-  23:Core/Src/main.c ****     while(1) {
- 115              		.loc 1 23 5 is_stmt 1 view .LVU20
-  24:Core/Src/main.c ****         // Включить PA5
-  25:Core/Src/main.c ****         *(uint32_t*)(0x40020000UL + 0x14UL) |= (1 << 5);
- 116              		.loc 1 25 9 view .LVU21
- 117 0030 094C     		ldr	r4, .L8+4
- 118 0032 6369     		ldr	r3, [r4, #20]
- 119              		.loc 1 25 45 is_stmt 0 view .LVU22
- 120 0034 43F02003 		orr	r3, r3, #32
- 121 0038 6361     		str	r3, [r4, #20]
-  26:Core/Src/main.c ****         delay(1000000);
- 122              		.loc 1 26 9 is_stmt 1 view .LVU23
- 123 003a 084D     		ldr	r5, .L8+8
- 124 003c 2846     		mov	r0, r5
- 125 003e FFF7FEFF 		bl	delay
- 126              	.LVL1:
-  27:Core/Src/main.c **** 
-  28:Core/Src/main.c ****         // Выключить PA5
-  29:Core/Src/main.c ****         *(uint32_t*)(0x40020000UL + 0x14UL) &= ~(1 << 5);
- 127              		.loc 1 29 9 view .LVU24
- 128 0042 6369     		ldr	r3, [r4, #20]
- 129              		.loc 1 29 45 is_stmt 0 view .LVU25
- 130 0044 23F02003 		bic	r3, r3, #32
- 131 0048 6361     		str	r3, [r4, #20]
-  30:Core/Src/main.c ****         delay(1000000);
- 132              		.loc 1 30 9 is_stmt 1 discriminator 1 view .LVU26
- 133 004a 2846     		mov	r0, r5
- 134 004c FFF7FEFF 		bl	delay
- 135              	.LVL2:
-  23:Core/Src/main.c ****         // Включить PA5
- 136              		.loc 1 23 10 view .LVU27
- 137 0050 EEE7     		b	.L6
- 138              	.L9:
- 139 0052 00BF     		.align	2
- 140              	.L8:
-ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s 			page 4
+  20:Core/Src/main.c ****     // Настроить PC13 как ввод (MODER13 = 00)
+  21:Core/Src/main.c ****     moder = *(volatile uint32_t*)(0x40020800UL + 0x00UL);
+ 111              		.loc 1 21 5 is_stmt 1 view .LVU20
+ 112              		.loc 1 21 11 is_stmt 0 view .LVU21
+ 113 001e D3F80028 		ldr	r2, [r3, #2048]
+ 114              	.LVL4:
+  22:Core/Src/main.c ****     moder &= ~(3 << (13 * 2));
+ 115              		.loc 1 22 5 is_stmt 1 view .LVU22
+ 116              		.loc 1 22 11 is_stmt 0 view .LVU23
+ 117 0022 22F04062 		bic	r2, r2, #201326592
+ 118              	.LVL5:
+  23:Core/Src/main.c ****     *(volatile uint32_t*)(0x40020800UL + 0x00UL) = moder;
+ 119              		.loc 1 23 5 is_stmt 1 view .LVU24
+ 120              		.loc 1 23 50 is_stmt 0 view .LVU25
+ 121 0026 C3F80028 		str	r2, [r3, #2048]
+  24:Core/Src/main.c **** 
+  25:Core/Src/main.c ****     // Отключить подтяжки на PA5
+  26:Core/Src/main.c ****     uint32_t pupdr = *(volatile uint32_t*)(0x40020000UL + 0x0CUL);
+ 122              		.loc 1 26 5 is_stmt 1 view .LVU26
+ 123              		.loc 1 26 14 is_stmt 0 view .LVU27
+ 124 002a DA68     		ldr	r2, [r3, #12]
+ 125              	.LVL6:
+  27:Core/Src/main.c ****     pupdr &= ~(3 << (5 * 2));
+ 126              		.loc 1 27 5 is_stmt 1 view .LVU28
+ 127              		.loc 1 27 11 is_stmt 0 view .LVU29
+ 128 002c 22F44062 		bic	r2, r2, #3072
+ 129              	.LVL7:
+  28:Core/Src/main.c ****     *(volatile uint32_t*)(0x40020000UL + 0x0CUL) = pupdr;
+ 130              		.loc 1 28 5 is_stmt 1 view .LVU30
+ 131              		.loc 1 28 50 is_stmt 0 view .LVU31
+ 132 0030 DA60     		str	r2, [r3, #12]
+ 133              	.LVL8:
+  29:Core/Src/main.c **** 
+  30:Core/Src/main.c ****     // Включить подтяжку вверх на PC13 (PUPDR13 = 0b01)
+  31:Core/Src/main.c ****     pupdr = *(volatile uint32_t*)(0x40020800UL + 0x0CUL);
+ 134              		.loc 1 31 5 is_stmt 1 view .LVU32
+ 135              		.loc 1 31 11 is_stmt 0 view .LVU33
+ 136 0032 D3F80C28 		ldr	r2, [r3, #2060]
+ 137              	.LVL9:
+  32:Core/Src/main.c ****     pupdr &= ~(3 << (13 * 2));
+ 138              		.loc 1 32 5 is_stmt 1 view .LVU34
+ 139              		.loc 1 32 11 is_stmt 0 view .LVU35
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccOslyFX.s 			page 4
 
 
- 141 0054 00300240 		.word	1073885184
- 142 0058 00000240 		.word	1073872896
- 143 005c 40420F00 		.word	1000000
- 144              		.cfi_endproc
- 145              	.LFE1:
- 147              		.text
- 148              	.Letext0:
- 149              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
- 150              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
-ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s 			page 5
+ 140 0036 22F04062 		bic	r2, r2, #201326592
+ 141              	.LVL10:
+  33:Core/Src/main.c ****     pupdr |=  (1 << (13 * 2));
+ 142              		.loc 1 33 5 is_stmt 1 view .LVU36
+ 143              		.loc 1 33 11 is_stmt 0 view .LVU37
+ 144 003a 42F08062 		orr	r2, r2, #67108864
+ 145              	.LVL11:
+  34:Core/Src/main.c ****     *(volatile uint32_t*)(0x40020800UL + 0x0CUL) = pupdr;
+ 146              		.loc 1 34 5 is_stmt 1 view .LVU38
+ 147              		.loc 1 34 50 is_stmt 0 view .LVU39
+ 148 003e C3F80C28 		str	r2, [r3, #2060]
+  35:Core/Src/main.c **** 
+  36:Core/Src/main.c ****     // Переменная для хранения состояния светодиода (0 - в
+  37:Core/Src/main.c ****     uint8_t led_state = 0;
+ 149              		.loc 1 37 5 is_stmt 1 view .LVU40
+ 150              	.LVL12:
+  38:Core/Src/main.c ****     uint8_t last_button_state = 1;
+ 151              		.loc 1 38 5 view .LVU41
+ 152              		.loc 1 38 13 is_stmt 0 view .LVU42
+ 153 0042 0122     		movs	r2, #1
+ 154              	.LVL13:
+  37:Core/Src/main.c ****     uint8_t last_button_state = 1;
+ 155              		.loc 1 37 13 view .LVU43
+ 156 0044 0025     		movs	r5, #0
+ 157 0046 07E0     		b	.L8
+ 158              	.LVL14:
+ 159              	.L7:
+ 160              	.LBB2:
+  39:Core/Src/main.c **** 
+  40:Core/Src/main.c ****     while(1) {
+  41:Core/Src/main.c ****         // Считать состояние кнопки PC13 (0 - нажата, 1 - отпуще�
+  42:Core/Src/main.c ****         uint8_t button_state = (*(volatile uint32_t*)(0x40020800UL + 0x10UL) & (1 << 13)) ? 1 : 0;
+  43:Core/Src/main.c **** 
+  44:Core/Src/main.c ****         // Если кнопка была отпущена и теперь нажата - пере�
+  45:Core/Src/main.c ****         if(last_button_state == 1 && button_state == 0) {
+  46:Core/Src/main.c ****             led_state = !led_state;
+  47:Core/Src/main.c **** 
+  48:Core/Src/main.c ****             if(led_state) {
+  49:Core/Src/main.c ****                 *(volatile uint32_t*)(0x40020000UL + 0x18UL) = (1 << 5);  // Включить св�
+  50:Core/Src/main.c ****             } else {
+  51:Core/Src/main.c ****                 *(volatile uint32_t*)(0x40020000UL + 0x14UL) = (1 << 5);  // Выключить с�
+ 161              		.loc 1 51 17 is_stmt 1 view .LVU44
+ 162              		.loc 1 51 62 is_stmt 0 view .LVU45
+ 163 0048 0E4A     		ldr	r2, .L10+4
+ 164              	.LVL15:
+ 165              		.loc 1 51 62 view .LVU46
+ 166 004a 2021     		movs	r1, #32
+ 167 004c 5161     		str	r1, [r2, #20]
+  46:Core/Src/main.c **** 
+ 168              		.loc 1 46 23 view .LVU47
+ 169 004e 1D46     		mov	r5, r3
+ 170              	.LVL16:
+ 171              	.L6:
+  52:Core/Src/main.c ****             }
+  53:Core/Src/main.c ****         }
+  54:Core/Src/main.c ****         last_button_state = button_state;
+ 172              		.loc 1 54 9 is_stmt 1 view .LVU48
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccOslyFX.s 			page 5
+
+
+  55:Core/Src/main.c **** 
+  56:Core/Src/main.c ****         // Небольшая задержка для антидребезга кнопки
+  57:Core/Src/main.c ****         delay(300000);
+ 173              		.loc 1 57 9 view .LVU49
+ 174 0050 0D48     		ldr	r0, .L10+8
+ 175 0052 FFF7FEFF 		bl	delay
+ 176              	.LVL17:
+ 177              	.LBE2:
+  40:Core/Src/main.c ****         // Считать состояние кнопки PC13 (0 - нажата, 1 - отпуще�
+ 178              		.loc 1 40 10 view .LVU50
+ 179              	.LBB3:
+  54:Core/Src/main.c **** 
+ 180              		.loc 1 54 27 is_stmt 0 view .LVU51
+ 181 0056 2246     		mov	r2, r4
+ 182              	.LVL18:
+ 183              	.L8:
+  54:Core/Src/main.c **** 
+ 184              		.loc 1 54 27 view .LVU52
+ 185              	.LBE3:
+  40:Core/Src/main.c ****         // Считать состояние кнопки PC13 (0 - нажата, 1 - отпуще�
+ 186              		.loc 1 40 5 is_stmt 1 view .LVU53
+ 187              	.LBB4:
+  42:Core/Src/main.c **** 
+ 188              		.loc 1 42 9 view .LVU54
+  42:Core/Src/main.c **** 
+ 189              		.loc 1 42 33 is_stmt 0 view .LVU55
+ 190 0058 0A4B     		ldr	r3, .L10+4
+ 191 005a D3F81048 		ldr	r4, [r3, #2064]
+  42:Core/Src/main.c **** 
+ 192              		.loc 1 42 95 view .LVU56
+ 193 005e 04F40051 		and	r1, r4, #8192
+ 194 0062 C4F34034 		ubfx	r4, r4, #13, #1
+ 195              	.LVL19:
+  45:Core/Src/main.c ****             led_state = !led_state;
+ 196              		.loc 1 45 9 is_stmt 1 view .LVU57
+  45:Core/Src/main.c ****             led_state = !led_state;
+ 197              		.loc 1 45 11 is_stmt 0 view .LVU58
+ 198 0066 002A     		cmp	r2, #0
+ 199 0068 F2D0     		beq	.L6
+  45:Core/Src/main.c ****             led_state = !led_state;
+ 200              		.loc 1 45 35 discriminator 1 view .LVU59
+ 201 006a 0029     		cmp	r1, #0
+ 202 006c F0D1     		bne	.L6
+  46:Core/Src/main.c **** 
+ 203              		.loc 1 46 13 is_stmt 1 view .LVU60
+  46:Core/Src/main.c **** 
+ 204              		.loc 1 46 25 is_stmt 0 view .LVU61
+ 205 006e 85F00103 		eor	r3, r5, #1
+ 206              	.LVL20:
+  48:Core/Src/main.c ****                 *(volatile uint32_t*)(0x40020000UL + 0x18UL) = (1 << 5);  // Включить св�
+ 207              		.loc 1 48 13 is_stmt 1 view .LVU62
+  48:Core/Src/main.c ****                 *(volatile uint32_t*)(0x40020000UL + 0x18UL) = (1 << 5);  // Включить св�
+ 208              		.loc 1 48 15 is_stmt 0 view .LVU63
+ 209 0072 002D     		cmp	r5, #0
+ 210 0074 E8D1     		bne	.L7
+  49:Core/Src/main.c ****             } else {
+ 211              		.loc 1 49 17 is_stmt 1 view .LVU64
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccOslyFX.s 			page 6
+
+
+  49:Core/Src/main.c ****             } else {
+ 212              		.loc 1 49 62 is_stmt 0 view .LVU65
+ 213 0076 034A     		ldr	r2, .L10+4
+ 214              	.LVL21:
+  49:Core/Src/main.c ****             } else {
+ 215              		.loc 1 49 62 view .LVU66
+ 216 0078 2021     		movs	r1, #32
+ 217 007a 9161     		str	r1, [r2, #24]
+  46:Core/Src/main.c **** 
+ 218              		.loc 1 46 23 view .LVU67
+ 219 007c 1D46     		mov	r5, r3
+ 220 007e E7E7     		b	.L6
+ 221              	.L11:
+ 222              		.align	2
+ 223              	.L10:
+ 224 0080 00300240 		.word	1073885184
+ 225 0084 00000240 		.word	1073872896
+ 226 0088 E0930400 		.word	300000
+ 227              	.LBE4:
+ 228              		.cfi_endproc
+ 229              	.LFE1:
+ 231              		.text
+ 232              	.Letext0:
+ 233              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 234              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccOslyFX.s 			page 7
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s:21     .text.delay:00000000 $t
-C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s:27     .text.delay:00000000 delay
-C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s:70     .text.main:00000000 $t
-C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s:76     .text.main:00000000 main
-C:\Users\Thx\AppData\Local\Temp\ccqkMmKs.s:141    .text.main:00000054 $d
+C:\Users\Thx\AppData\Local\Temp\ccOslyFX.s:21     .text.delay:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccOslyFX.s:27     .text.delay:00000000 delay
+C:\Users\Thx\AppData\Local\Temp\ccOslyFX.s:70     .text.main:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccOslyFX.s:76     .text.main:00000000 main
+C:\Users\Thx\AppData\Local\Temp\ccOslyFX.s:224    .text.main:00000080 $d
 
 NO UNDEFINED SYMBOLS

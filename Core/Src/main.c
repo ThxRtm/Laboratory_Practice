@@ -7,86 +7,56 @@ void delay(volatile uint32_t count) {
 }
 
 int main(void) {
-    // Включить тактирование порта A
-    *(uint32_t*)(0x40023800UL + 0x30UL) |= 0x02;
+    *(volatile uint32_t*)(0x40023800UL + 0x30UL) |= (1 << 0) | (1 << 2); // Включить тактирование GPIOA и GPIOC
 
     // Настройка PA5 как выход
-    *(uint32_t*)(0x40020000UL + 0x00UL) &= ~(3 << (5 * 2)); // Очистить MODER пина 5
-    *(uint32_t*)(0x40020000UL + 0x00UL) |= (1 << (5 * 2));  // Установить режим output (01)
+    uint32_t moder = *(volatile uint32_t*)(0x40020000UL + 0x00UL);
+    moder &= ~(3 << (5 * 2));
+    moder |=  (1 << (5 * 2));
+    *(volatile uint32_t*)(0x40020000UL + 0x00UL) = moder;
 
-    // Настройка скорости порта PA5
-    *(uint32_t*)(0x40020000UL + 0x08UL) |= (1 << (5 * 2));
+    // Настройка PC13 как вход
+    moder = *(volatile uint32_t*)(0x40020800UL + 0x00UL);
+    moder &= ~(3 << (13 * 2));
+    *(volatile uint32_t*)(0x40020800UL + 0x00UL) = moder;
 
-    // Отключение подтяжки
-    *(uint32_t*)(0x40020000UL + 0x0CUL) &= ~(3 << (5 * 2));
+    // Отключаем подтяжки на PA5
+    uint32_t pupdr = *(volatile uint32_t*)(0x40020000UL + 0x0CUL);
+    pupdr &= ~(3 << (5 * 2));
+    *(volatile uint32_t*)(0x40020000UL + 0x0CUL) = pupdr;
+
+    // Включаем подтяжку вверх на PC13
+    pupdr = *(volatile uint32_t*)(0x40020800UL + 0x0CUL);
+    pupdr &= ~(3 << (13 * 2));
+    pupdr |=  (1 << (13 * 2));
+    *(volatile uint32_t*)(0x40020800UL + 0x0CUL) = pupdr;
+
+    uint8_t led_state = 0;
+    uint8_t last_button_state = 1;
+    uint8_t button_released = 1;  // Флаг отпускания кнопки для исключения дребезга
 
     while(1) {
-        // Включить PA5
-        *(uint32_t*)(0x40020000UL + 0x14UL) |= (1 << 5);
-        delay(1000000);
+        uint8_t button_state = (*(volatile uint32_t*)(0x40020800UL + 0x10UL) & (1 << 13)) ? 1 : 0;
 
-        // Выключить PA5
-        *(uint32_t*)(0x40020000UL + 0x14UL) &= ~(1 << 5);
-        delay(1000000);
+        if(button_state == 1) {
+            // Кнопка отпущена
+            button_released = 1;
+        }
+        // Только если кнопка была отпущена и теперь нажата - переключаем светодиод
+        if(button_released && last_button_state == 1 && button_state == 0) {
+            led_state = !led_state;
+            button_released = 0;  // Ждём отпускания, чтобы не переключать бесконечно
+
+            if(led_state) {
+                *(volatile uint32_t*)(0x40020000UL + 0x18UL) = (1 << 5);
+            } else {
+                *(volatile uint32_t*)(0x40020000UL + 0x14UL) = (1 << 5);
+            }
+        }
+        last_button_state = button_state;
+
+        delay(300000);
     }
+
     return 0;
 }
-
-
-
-
-
-
-
-/*
-// Сдвиг цветов в режиме
-const uint8_t led_map[3][3] = {
-    {0, 1, 2}, // Базовый: зелёный, синий, красный
-    {2, 0, 1}, // 1-й сдвиг: красный, зелёный, синий
-    {1, 2, 0}  // 2-й сдвиг: синий, красный, зелёный
-};
-
-void set_led(int color, int state)
-{
-    switch (color) {
-        case 0: // green
-            if (state) SET_BIT(GPIOB_ODR, (1 << 0));
-            else CLR_BIT(GPIOB_ODR, (1 << 0));
-            break;
-        case 1: // blue
-            if (state) SET_BIT(GPIOB_ODR, (1 << 7));
-            else CLR_BIT(GPIOB_ODR, (1 << 7));
-            break;
-        case 2: // red
-            if (state) SET_BIT(GPIOB_ODR, (1 << 14));
-            else CLR_BIT(GPIOB_ODR, (1 << 14));
-            break;
-    }
-}
-
-int main(void)
-{
-    GPIO_Init();
-
-    int mode = 0;
-    int last_btn4 = 1;
-    while (1)
-    {
-        int btn1 = !(GPIOC_IDR & (1 << 13));
-        int btn2 = !(GPIOA_ODR & (1 << 8));
-        int btn3 = !(GPIOB_ODR & (1 << 6));
-        int btn4 = !(GPIOD_ODR & (1 << 3));
-
-        // Управление тройкой светодиодов по текущему режиму
-        set_led(led_map[mode][0], btn1);
-        set_led(led_map[mode][1], btn2);
-        set_led(led_map[mode][2], btn3);
-
-        // Смена режима по фронту кнопки 4
-        if (last_btn4 == 1 && btn4 == 0) {
-            mode = (mode + 1) % 3;
-        }
-        last_btn4 = btn4;
-    }
-}
-*/
