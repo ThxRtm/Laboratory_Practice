@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccZF5Qfy.s 			page 1
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -20,11 +20,640 @@ ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccZF5Qfy.s 			page 1
   17              	.Ltext0:
   18              		.cfi_sections	.debug_frame
   19              		.file 1 "Core/Src/init.c"
-  20              	.Letext0:
-ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccZF5Qfy.s 			page 2
+  20              		.section	.text.disableAllLeds,"ax",%progbits
+  21              		.align	1
+  22              		.global	disableAllLeds
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	disableAllLeds:
+  28              	.LFB0:
+   1:Core/Src/init.c **** /*#include "init.h"
+   2:Core/Src/init.c **** 
+   3:Core/Src/init.c **** uint8_t led_state[3] = {0, 0, 0};
+   4:Core/Src/init.c **** uint8_t button_to_color[3] = {0, 1, 2};
+   5:Core/Src/init.c **** uint8_t btn1_prev = 0, btn2_prev = 0, btn3_prev = 0, mode_prev = 0;
+   6:Core/Src/init.c **** uint8_t mode_count = 0;
+   7:Core/Src/init.c **** 
+   8:Core/Src/init.c **** // Функции
+   9:Core/Src/init.c **** void disableAllLeds(void) {
+  10:Core/Src/init.c ****     // Зеленые (CMSIS)
+  11:Core/Src/init.c ****     GPIOA->BSRR = GPIO_BSRR_BR_5;
+  12:Core/Src/init.c ****     GPIOC->BSRR = GPIO_BSRR_BR_5;
+  13:Core/Src/init.c ****     
+  14:Core/Src/init.c ****     // Синие (прямое обращение)
+  15:Core/Src/init.c ****     GPIOC_BSRR = BSRR_RESET_6;
+  16:Core/Src/init.c ****     GPIOB_BSRR = BSRR_RESET_2;
+  17:Core/Src/init.c ****     
+  18:Core/Src/init.c ****     // Красные (прямое обращение)
+  19:Core/Src/init.c ****     GPIOA_BSRR = BSRR_RESET_6;
+  20:Core/Src/init.c ****     GPIOB_BSRR = BSRR_RESET_1;
+  21:Core/Src/init.c **** }
+  22:Core/Src/init.c **** 
+  23:Core/Src/init.c **** 
+  24:Core/Src/init.c **** void update_leds(void) {
+  25:Core/Src/init.c ****     // Зелёные светодиоды (CMSIS)
+  26:Core/Src/init.c ****     if (led_state[0]) {
+  27:Core/Src/init.c ****         GPIOA->BSRR = GPIO_BSRR_BS_5;
+  28:Core/Src/init.c ****         GPIOC->BSRR = GPIO_BSRR_BS_5;
+  29:Core/Src/init.c ****     } else {
+  30:Core/Src/init.c ****         GPIOA->BSRR = GPIO_BSRR_BR_5;
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s 			page 2
+
+
+  31:Core/Src/init.c ****         GPIOC->BSRR = GPIO_BSRR_BR_5;
+  32:Core/Src/init.c ****     }
+  33:Core/Src/init.c ****     
+  34:Core/Src/init.c ****     // Синие светодиоды (прямое обращение)
+  35:Core/Src/init.c ****     if (led_state[1]) {
+  36:Core/Src/init.c ****         GPIOC_BSRR = BSRR_SET_6;
+  37:Core/Src/init.c ****         GPIOB_BSRR = BSRR_SET_2;
+  38:Core/Src/init.c ****     } else {
+  39:Core/Src/init.c ****         GPIOC_BSRR = BSRR_RESET_6;
+  40:Core/Src/init.c ****         GPIOB_BSRR = BSRR_RESET_2;
+  41:Core/Src/init.c ****     }
+  42:Core/Src/init.c ****     
+  43:Core/Src/init.c ****     // Красные светодиоды (прямое обращение)
+  44:Core/Src/init.c ****     if (led_state[2]) {
+  45:Core/Src/init.c ****         GPIOA_BSRR = BSRR_SET_6;
+  46:Core/Src/init.c ****         GPIOB_BSRR = BSRR_SET_1;
+  47:Core/Src/init.c ****     } else {
+  48:Core/Src/init.c ****         GPIOA_BSRR = BSRR_RESET_6;
+  49:Core/Src/init.c ****         GPIOB_BSRR = BSRR_RESET_1;
+  50:Core/Src/init.c ****     }
+  51:Core/Src/init.c **** }
+  52:Core/Src/init.c **** 
+  53:Core/Src/init.c **** 
+  54:Core/Src/init.c **** uint8_t readButton(volatile uint32_t *idr, uint32_t mask, uint8_t* prevState) {
+  55:Core/Src/init.c ****     uint8_t pressed = !(*idr & mask);
+  56:Core/Src/init.c ****     uint8_t result = 0;
+  57:Core/Src/init.c ****     if (pressed && !(*prevState)) result = 1;
+  58:Core/Src/init.c ****     *prevState = pressed;
+  59:Core/Src/init.c ****     return result;
+  60:Core/Src/init.c **** }
+  61:Core/Src/init.c **** 
+  62:Core/Src/init.c **** 
+  63:Core/Src/init.c **** void GPIO_Init_All(void) {
+  64:Core/Src/init.c ****     // Включение тактирования
+  65:Core/Src/init.c ****     RCC_AHB1ENR |= 0x07;
+  66:Core/Src/init.c **** 
+  67:Core/Src/init.c ****     // Зелёные светодиоды (CMSIS)
+  68:Core/Src/init.c ****     // PA5 - зелёный диод на GPIOA
+  69:Core/Src/init.c ****     SET_BIT(GPIOA->MODER, GPIO_MODER_MODER5_0);
+  70:Core/Src/init.c ****     CLEAR_BIT(GPIOA->MODER, GPIO_MODER_MODER5_1);
+  71:Core/Src/init.c ****     // PC5 - зелёный диод на GPIOC
+  72:Core/Src/init.c ****     SET_BIT(GPIOC->MODER, GPIO_MODER_MODER5_0);
+  73:Core/Src/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODER5_1);
+  74:Core/Src/init.c **** 
+  75:Core/Src/init.c ****     // Красные светодиоды (прямое обращение)
+  76:Core/Src/init.c ****     GPIOA_MODER |= MODER_PA6_OUTPUT;        // PA6 - красный диод на GPIOA
+  77:Core/Src/init.c ****     GPIOB_MODER |= MODER_PB1_OUTPUT;        // PB1 - красный диод на GPIOB
+  78:Core/Src/init.c ****     // Синие светодиоды (прямое обращение)
+  79:Core/Src/init.c ****     GPIOC_MODER |= MODER_PC6_OUTPUT;        // PC6 - синий диод на GPIOC
+  80:Core/Src/init.c ****     GPIOB_MODER |= MODER_PB2_OUTPUT;        // PB2 - синий диод на GPIOB
+  81:Core/Src/init.c ****     // Кнопки
+  82:Core/Src/init.c ****     // BTN1 - PC13 (вход с подтяжкой)
+  83:Core/Src/init.c ****     GPIOC_PUPDR |= PUPDR_PC13_PULLUP;
+  84:Core/Src/init.c ****     
+  85:Core/Src/init.c ****     // BTN2 - PB12 (вход с подтяжкой)
+  86:Core/Src/init.c ****     GPIOB_PUPDR |= PUPDR_PB12_PULLUP;
+  87:Core/Src/init.c ****     
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s 			page 3
+
+
+  88:Core/Src/init.c ****     // BTN3 - PC4 (CMSIS, вход с подтяжкой)
+  89:Core/Src/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODER4_0);
+  90:Core/Src/init.c ****     CLEAR_BIT(GPIOC->MODER, GPIO_MODER_MODER4_1);
+  91:Core/Src/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR4_0);
+  92:Core/Src/init.c ****     CLEAR_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR4_1);
+  93:Core/Src/init.c ****     SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR4_0);
+  94:Core/Src/init.c ****     
+  95:Core/Src/init.c ****     // MODE - PA11 (вход с подтяжкой)
+  96:Core/Src/init.c ****     GPIOA_PUPDR |= PUPDR_PA11_PULLUP;
+  97:Core/Src/init.c ****     
+  98:Core/Src/init.c ****     disableAllLeds();
+  99:Core/Src/init.c **** }
+ 100:Core/Src/init.c **** */
+ 101:Core/Src/init.c **** 
+ 102:Core/Src/init.c **** 
+ 103:Core/Src/init.c **** 
+ 104:Core/Src/init.c **** 
+ 105:Core/Src/init.c **** 
+ 106:Core/Src/init.c **** 
+ 107:Core/Src/init.c **** 
+ 108:Core/Src/init.c **** #include "init.h"
+ 109:Core/Src/init.c **** 
+ 110:Core/Src/init.c **** // Глобальные переменные
+ 111:Core/Src/init.c **** const uint32_t blink_delays[Number_of_freq] = {10000, 90000, 180000};
+ 112:Core/Src/init.c **** uint8_t current_freq_index[Number_of_elements] = {0, 0, 0};
+ 113:Core/Src/init.c **** uint8_t current_order_index = 0;
+ 114:Core/Src/init.c **** uint8_t state_array[Number_of_elements] = {0, 0, 0};
+ 115:Core/Src/init.c **** uint32_t delay_counters[Number_of_elements] = {0, 0, 0};
+ 116:Core/Src/init.c **** uint8_t led_visible[Number_of_elements] = {0, 0, 0};
+ 117:Core/Src/init.c **** uint8_t btn1_prev = 0, btn2_prev = 0, btn3_prev = 0, mode_prev = 0;
+ 118:Core/Src/init.c **** 
+ 119:Core/Src/init.c **** // Функции
+ 120:Core/Src/init.c **** void disableAllLeds(void) {
+  29              		.loc 1 120 27 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+ 121:Core/Src/init.c ****     // Выключить все светодиоды
+ 122:Core/Src/init.c ****     GPIOA_BSRR = GPIO_BSRR_RESET(GPIO_PIN_5);
+  34              		.loc 1 122 5 view .LVU1
+  35              		.loc 1 122 16 is_stmt 0 view .LVU2
+  36 0000 094B     		ldr	r3, .L2
+  37 0002 4FF40012 		mov	r2, #2097152
+  38 0006 9A61     		str	r2, [r3, #24]
+ 123:Core/Src/init.c ****     GPIOC_BSRR = GPIO_BSRR_RESET(GPIO_PIN_5);
+  39              		.loc 1 123 5 is_stmt 1 view .LVU3
+  40              		.loc 1 123 16 is_stmt 0 view .LVU4
+  41 0008 C3F81828 		str	r2, [r3, #2072]
+ 124:Core/Src/init.c ****     GPIOA_BSRR = GPIO_BSRR_RESET(GPIO_PIN_6);
+  42              		.loc 1 124 5 is_stmt 1 view .LVU5
+  43              		.loc 1 124 16 is_stmt 0 view .LVU6
+  44 000c 4FF48002 		mov	r2, #4194304
+  45 0010 9A61     		str	r2, [r3, #24]
+ 125:Core/Src/init.c ****     GPIOB_BSRR = GPIO_BSRR_RESET(GPIO_PIN_1);
+  46              		.loc 1 125 5 is_stmt 1 view .LVU7
+  47              		.loc 1 125 16 is_stmt 0 view .LVU8
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s 			page 4
+
+
+  48 0012 4FF40031 		mov	r1, #131072
+  49 0016 C3F81814 		str	r1, [r3, #1048]
+ 126:Core/Src/init.c ****     GPIOC_BSRR = GPIO_BSRR_RESET(GPIO_PIN_6);
+  50              		.loc 1 126 5 is_stmt 1 view .LVU9
+  51              		.loc 1 126 16 is_stmt 0 view .LVU10
+  52 001a C3F81828 		str	r2, [r3, #2072]
+ 127:Core/Src/init.c ****     GPIOB_BSRR = GPIO_BSRR_RESET(GPIO_PIN_2);
+  53              		.loc 1 127 5 is_stmt 1 view .LVU11
+  54              		.loc 1 127 16 is_stmt 0 view .LVU12
+  55 001e 4FF48022 		mov	r2, #262144
+  56 0022 C3F81824 		str	r2, [r3, #1048]
+ 128:Core/Src/init.c **** }
+  57              		.loc 1 128 1 view .LVU13
+  58 0026 7047     		bx	lr
+  59              	.L3:
+  60              		.align	2
+  61              	.L2:
+  62 0028 00000240 		.word	1073872896
+  63              		.cfi_endproc
+  64              	.LFE0:
+  66              		.section	.text.update_states,"ax",%progbits
+  67              		.align	1
+  68              		.global	update_states
+  69              		.syntax unified
+  70              		.thumb
+  71              		.thumb_func
+  73              	update_states:
+  74              	.LFB1:
+ 129:Core/Src/init.c **** 
+ 130:Core/Src/init.c **** 
+ 131:Core/Src/init.c **** void update_states(void) {
+  75              		.loc 1 131 26 is_stmt 1 view -0
+  76              		.cfi_startproc
+  77              		@ args = 0, pretend = 0, frame = 0
+  78              		@ frame_needed = 0, uses_anonymous_args = 0
+  79              		@ link register save eliminated.
+ 132:Core/Src/init.c ****     // Обновление физического состояния светодиодов
+ 133:Core/Src/init.c ****     
+ 134:Core/Src/init.c ****     // Первая пара (зеленые): PA5 и PC5
+ 135:Core/Src/init.c ****     if (state_array[0] && led_visible[0]) {
+  80              		.loc 1 135 5 view .LVU15
+  81              		.loc 1 135 20 is_stmt 0 view .LVU16
+  82 0000 1F4B     		ldr	r3, .L11
+  83 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  84              		.loc 1 135 8 view .LVU17
+  85 0004 43B1     		cbz	r3, .L5
+  86              		.loc 1 135 38 discriminator 1 view .LVU18
+  87 0006 1F4B     		ldr	r3, .L11+4
+  88 0008 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+  89              		.loc 1 135 24 discriminator 1 view .LVU19
+  90 000a 2BB1     		cbz	r3, .L5
+ 136:Core/Src/init.c ****         GPIOA_BSRR = GPIO_BSRR_SET(GPIO_PIN_5);
+  91              		.loc 1 136 9 is_stmt 1 view .LVU20
+  92              		.loc 1 136 20 is_stmt 0 view .LVU21
+  93 000c 1E4B     		ldr	r3, .L11+8
+  94 000e 2022     		movs	r2, #32
+  95 0010 9A61     		str	r2, [r3, #24]
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s 			page 5
+
+
+ 137:Core/Src/init.c ****         GPIOC_BSRR = GPIO_BSRR_SET(GPIO_PIN_5);
+  96              		.loc 1 137 9 is_stmt 1 view .LVU22
+  97              		.loc 1 137 20 is_stmt 0 view .LVU23
+  98 0012 C3F81828 		str	r2, [r3, #2072]
+  99 0016 05E0     		b	.L6
+ 100              	.L5:
+ 138:Core/Src/init.c ****     } else {
+ 139:Core/Src/init.c ****         GPIOA_BSRR = GPIO_BSRR_RESET(GPIO_PIN_5);
+ 101              		.loc 1 139 9 is_stmt 1 view .LVU24
+ 102              		.loc 1 139 20 is_stmt 0 view .LVU25
+ 103 0018 1B4B     		ldr	r3, .L11+8
+ 104 001a 4FF40012 		mov	r2, #2097152
+ 105 001e 9A61     		str	r2, [r3, #24]
+ 140:Core/Src/init.c ****         GPIOC_BSRR = GPIO_BSRR_RESET(GPIO_PIN_5);
+ 106              		.loc 1 140 9 is_stmt 1 view .LVU26
+ 107              		.loc 1 140 20 is_stmt 0 view .LVU27
+ 108 0020 C3F81828 		str	r2, [r3, #2072]
+ 109              	.L6:
+ 141:Core/Src/init.c ****     }
+ 142:Core/Src/init.c ****     
+ 143:Core/Src/init.c ****     // Вторая пара (синие): PC6 и PB2
+ 144:Core/Src/init.c ****     if (state_array[1] && led_visible[1]) {
+ 110              		.loc 1 144 5 is_stmt 1 view .LVU28
+ 111              		.loc 1 144 20 is_stmt 0 view .LVU29
+ 112 0024 164B     		ldr	r3, .L11
+ 113 0026 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 114              		.loc 1 144 8 view .LVU30
+ 115 0028 53B1     		cbz	r3, .L7
+ 116              		.loc 1 144 38 discriminator 1 view .LVU31
+ 117 002a 164B     		ldr	r3, .L11+4
+ 118 002c 5B78     		ldrb	r3, [r3, #1]	@ zero_extendqisi2
+ 119              		.loc 1 144 24 discriminator 1 view .LVU32
+ 120 002e 3BB1     		cbz	r3, .L7
+ 145:Core/Src/init.c ****         GPIOC_BSRR = GPIO_BSRR_SET(GPIO_PIN_6);
+ 121              		.loc 1 145 9 is_stmt 1 view .LVU33
+ 122              		.loc 1 145 20 is_stmt 0 view .LVU34
+ 123 0030 154B     		ldr	r3, .L11+8
+ 124 0032 4022     		movs	r2, #64
+ 125 0034 C3F81828 		str	r2, [r3, #2072]
+ 146:Core/Src/init.c ****         GPIOB_BSRR = GPIO_BSRR_SET(GPIO_PIN_2);
+ 126              		.loc 1 146 9 is_stmt 1 view .LVU35
+ 127              		.loc 1 146 20 is_stmt 0 view .LVU36
+ 128 0038 0422     		movs	r2, #4
+ 129 003a C3F81824 		str	r2, [r3, #1048]
+ 130 003e 08E0     		b	.L8
+ 131              	.L7:
+ 147:Core/Src/init.c ****     } else {
+ 148:Core/Src/init.c ****         GPIOC_BSRR = GPIO_BSRR_RESET(GPIO_PIN_6);
+ 132              		.loc 1 148 9 is_stmt 1 view .LVU37
+ 133              		.loc 1 148 20 is_stmt 0 view .LVU38
+ 134 0040 114B     		ldr	r3, .L11+8
+ 135 0042 4FF48002 		mov	r2, #4194304
+ 136 0046 C3F81828 		str	r2, [r3, #2072]
+ 149:Core/Src/init.c ****         GPIOB_BSRR = GPIO_BSRR_RESET(GPIO_PIN_2);
+ 137              		.loc 1 149 9 is_stmt 1 view .LVU39
+ 138              		.loc 1 149 20 is_stmt 0 view .LVU40
+ 139 004a 4FF48022 		mov	r2, #262144
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s 			page 6
+
+
+ 140 004e C3F81824 		str	r2, [r3, #1048]
+ 141              	.L8:
+ 150:Core/Src/init.c ****     }
+ 151:Core/Src/init.c ****     
+ 152:Core/Src/init.c ****     // Третья пара (красные): PA6 и PB1
+ 153:Core/Src/init.c ****     if (state_array[2] && led_visible[2]) {
+ 142              		.loc 1 153 5 is_stmt 1 view .LVU41
+ 143              		.loc 1 153 20 is_stmt 0 view .LVU42
+ 144 0052 0B4B     		ldr	r3, .L11
+ 145 0054 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 146              		.loc 1 153 8 view .LVU43
+ 147 0056 4BB1     		cbz	r3, .L9
+ 148              		.loc 1 153 38 discriminator 1 view .LVU44
+ 149 0058 0A4B     		ldr	r3, .L11+4
+ 150 005a 9B78     		ldrb	r3, [r3, #2]	@ zero_extendqisi2
+ 151              		.loc 1 153 24 discriminator 1 view .LVU45
+ 152 005c 33B1     		cbz	r3, .L9
+ 154:Core/Src/init.c ****         GPIOA_BSRR = GPIO_BSRR_SET(GPIO_PIN_6);
+ 153              		.loc 1 154 9 is_stmt 1 view .LVU46
+ 154              		.loc 1 154 20 is_stmt 0 view .LVU47
+ 155 005e 0A4B     		ldr	r3, .L11+8
+ 156 0060 4022     		movs	r2, #64
+ 157 0062 9A61     		str	r2, [r3, #24]
+ 155:Core/Src/init.c ****         GPIOB_BSRR = GPIO_BSRR_SET(GPIO_PIN_1);
+ 158              		.loc 1 155 9 is_stmt 1 view .LVU48
+ 159              		.loc 1 155 20 is_stmt 0 view .LVU49
+ 160 0064 0222     		movs	r2, #2
+ 161 0066 C3F81824 		str	r2, [r3, #1048]
+ 162 006a 7047     		bx	lr
+ 163              	.L9:
+ 156:Core/Src/init.c ****     } else {
+ 157:Core/Src/init.c ****         GPIOA_BSRR = GPIO_BSRR_RESET(GPIO_PIN_6);
+ 164              		.loc 1 157 9 is_stmt 1 view .LVU50
+ 165              		.loc 1 157 20 is_stmt 0 view .LVU51
+ 166 006c 064B     		ldr	r3, .L11+8
+ 167 006e 4FF48002 		mov	r2, #4194304
+ 168 0072 9A61     		str	r2, [r3, #24]
+ 158:Core/Src/init.c ****         GPIOB_BSRR = GPIO_BSRR_RESET(GPIO_PIN_1);
+ 169              		.loc 1 158 9 is_stmt 1 view .LVU52
+ 170              		.loc 1 158 20 is_stmt 0 view .LVU53
+ 171 0074 4FF40032 		mov	r2, #131072
+ 172 0078 C3F81824 		str	r2, [r3, #1048]
+ 159:Core/Src/init.c ****     }
+ 160:Core/Src/init.c **** }
+ 173              		.loc 1 160 1 view .LVU54
+ 174 007c 7047     		bx	lr
+ 175              	.L12:
+ 176 007e 00BF     		.align	2
+ 177              	.L11:
+ 178 0080 00000000 		.word	state_array
+ 179 0084 00000000 		.word	led_visible
+ 180 0088 00000240 		.word	1073872896
+ 181              		.cfi_endproc
+ 182              	.LFE1:
+ 184              		.section	.text.readButton,"ax",%progbits
+ 185              		.align	1
+ 186              		.global	readButton
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s 			page 7
+
+
+ 187              		.syntax unified
+ 188              		.thumb
+ 189              		.thumb_func
+ 191              	readButton:
+ 192              	.LVL0:
+ 193              	.LFB2:
+ 161:Core/Src/init.c **** 
+ 162:Core/Src/init.c **** 
+ 163:Core/Src/init.c **** uint8_t readButton(volatile uint32_t *idr, uint32_t mask, uint8_t* prevState) {
+ 194              		.loc 1 163 79 is_stmt 1 view -0
+ 195              		.cfi_startproc
+ 196              		@ args = 0, pretend = 0, frame = 0
+ 197              		@ frame_needed = 0, uses_anonymous_args = 0
+ 198              		@ link register save eliminated.
+ 164:Core/Src/init.c ****     // Безопасное считывание кнопки с детектором нажати�
+ 165:Core/Src/init.c ****     uint8_t pressed = !(*idr & mask);
+ 199              		.loc 1 165 5 view .LVU56
+ 200              		.loc 1 165 25 is_stmt 0 view .LVU57
+ 201 0000 0368     		ldr	r3, [r0]
+ 202              		.loc 1 165 30 view .LVU58
+ 203 0002 0B40     		ands	r3, r3, r1
+ 204              		.loc 1 165 23 view .LVU59
+ 205 0004 002B     		cmp	r3, #0
+ 206 0006 0CBF     		ite	eq
+ 207 0008 0123     		moveq	r3, #1
+ 208 000a 0023     		movne	r3, #0
+ 209              	.LVL1:
+ 166:Core/Src/init.c ****     uint8_t result = 0;
+ 210              		.loc 1 166 5 is_stmt 1 view .LVU60
+ 167:Core/Src/init.c ****     
+ 168:Core/Src/init.c ****     if (pressed && !(*prevState)) {
+ 211              		.loc 1 168 5 view .LVU61
+ 212              		.loc 1 168 8 is_stmt 0 view .LVU62
+ 213 000c 03D1     		bne	.L15
+ 214              		.loc 1 168 22 discriminator 1 view .LVU63
+ 215 000e 1178     		ldrb	r1, [r2]	@ zero_extendqisi2
+ 216              	.LVL2:
+ 217              		.loc 1 168 17 discriminator 1 view .LVU64
+ 218 0010 21B1     		cbz	r1, .L16
+ 166:Core/Src/init.c ****     uint8_t result = 0;
+ 219              		.loc 1 166 13 view .LVU65
+ 220 0012 0020     		movs	r0, #0
+ 221              	.LVL3:
+ 166:Core/Src/init.c ****     uint8_t result = 0;
+ 222              		.loc 1 166 13 view .LVU66
+ 223 0014 00E0     		b	.L14
+ 224              	.LVL4:
+ 225              	.L15:
+ 166:Core/Src/init.c ****     uint8_t result = 0;
+ 226              		.loc 1 166 13 view .LVU67
+ 227 0016 0020     		movs	r0, #0
+ 228              	.LVL5:
+ 229              	.L14:
+ 169:Core/Src/init.c ****         result = 1;
+ 170:Core/Src/init.c ****     }
+ 171:Core/Src/init.c ****     
+ 172:Core/Src/init.c ****     *prevState = pressed;
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s 			page 8
+
+
+ 230              		.loc 1 172 5 is_stmt 1 view .LVU68
+ 231              		.loc 1 172 16 is_stmt 0 view .LVU69
+ 232 0018 1370     		strb	r3, [r2]
+ 173:Core/Src/init.c ****     return result;
+ 233              		.loc 1 173 5 is_stmt 1 view .LVU70
+ 174:Core/Src/init.c **** }
+ 234              		.loc 1 174 1 is_stmt 0 view .LVU71
+ 235 001a 7047     		bx	lr
+ 236              	.LVL6:
+ 237              	.L16:
+ 169:Core/Src/init.c ****         result = 1;
+ 238              		.loc 1 169 16 view .LVU72
+ 239 001c 0120     		movs	r0, #1
+ 240              	.LVL7:
+ 169:Core/Src/init.c ****         result = 1;
+ 241              		.loc 1 169 16 view .LVU73
+ 242 001e FBE7     		b	.L14
+ 243              		.cfi_endproc
+ 244              	.LFE2:
+ 246              		.section	.text.GPIO_Init_All,"ax",%progbits
+ 247              		.align	1
+ 248              		.global	GPIO_Init_All
+ 249              		.syntax unified
+ 250              		.thumb
+ 251              		.thumb_func
+ 253              	GPIO_Init_All:
+ 254              	.LFB3:
+ 175:Core/Src/init.c **** 
+ 176:Core/Src/init.c **** 
+ 177:Core/Src/init.c **** void GPIO_Init_All(void) {
+ 255              		.loc 1 177 26 is_stmt 1 view -0
+ 256              		.cfi_startproc
+ 257              		@ args = 0, pretend = 0, frame = 0
+ 258              		@ frame_needed = 0, uses_anonymous_args = 0
+ 259 0000 08B5     		push	{r3, lr}
+ 260              	.LCFI0:
+ 261              		.cfi_def_cfa_offset 8
+ 262              		.cfi_offset 3, -8
+ 263              		.cfi_offset 14, -4
+ 178:Core/Src/init.c ****     // Включение тактирования портов
+ 179:Core/Src/init.c ****     RCC_AHB1ENR |= (RCC_GPIOA_EN | RCC_GPIOB_EN | RCC_GPIOC_EN);
+ 264              		.loc 1 179 5 view .LVU75
+ 265 0002 1D4A     		ldr	r2, .L19
+ 266 0004 D2F83038 		ldr	r3, [r2, #2096]
+ 267              		.loc 1 179 17 is_stmt 0 view .LVU76
+ 268 0008 43F00703 		orr	r3, r3, #7
+ 269 000c C2F83038 		str	r3, [r2, #2096]
+ 180:Core/Src/init.c **** 
+ 181:Core/Src/init.c ****     // Выходные светодиоды - режим OUTPUT
+ 182:Core/Src/init.c ****     // Зелёные светодиоды (PA5, PC5)
+ 183:Core/Src/init.c ****     GPIOA_MODER |= MODER_PA5_OUTPUT;
+ 270              		.loc 1 183 5 is_stmt 1 view .LVU77
+ 271 0010 1A4B     		ldr	r3, .L19+4
+ 272 0012 1968     		ldr	r1, [r3]
+ 273              		.loc 1 183 17 is_stmt 0 view .LVU78
+ 274 0014 41F48062 		orr	r2, r1, #1024
+ 275 0018 1A60     		str	r2, [r3]
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s 			page 9
+
+
+ 184:Core/Src/init.c ****     GPIOC_MODER |= MODER_PC5_OUTPUT;
+ 276              		.loc 1 184 5 is_stmt 1 view .LVU79
+ 277 001a D3F80028 		ldr	r2, [r3, #2048]
+ 278              		.loc 1 184 17 is_stmt 0 view .LVU80
+ 279 001e 42F48060 		orr	r0, r2, #1024
+ 280 0022 C3F80008 		str	r0, [r3, #2048]
+ 185:Core/Src/init.c ****     
+ 186:Core/Src/init.c ****     // Синие светодиоды (PC6, PB2)
+ 187:Core/Src/init.c ****     GPIOC_MODER |= MODER_PC6_OUTPUT;
+ 281              		.loc 1 187 5 is_stmt 1 view .LVU81
+ 282              		.loc 1 187 17 is_stmt 0 view .LVU82
+ 283 0026 42F4A052 		orr	r2, r2, #5120
+ 284 002a C3F80028 		str	r2, [r3, #2048]
+ 188:Core/Src/init.c ****     GPIOB_MODER |= MODER_PB2_OUTPUT;
+ 285              		.loc 1 188 5 is_stmt 1 view .LVU83
+ 286 002e D3F80024 		ldr	r2, [r3, #1024]
+ 287              		.loc 1 188 17 is_stmt 0 view .LVU84
+ 288 0032 42F01000 		orr	r0, r2, #16
+ 289 0036 C3F80004 		str	r0, [r3, #1024]
+ 189:Core/Src/init.c ****     
+ 190:Core/Src/init.c ****     // Красные светодиоды (PA6, PB1)
+ 191:Core/Src/init.c ****     GPIOA_MODER |= MODER_PA6_OUTPUT;
+ 290              		.loc 1 191 5 is_stmt 1 view .LVU85
+ 291              		.loc 1 191 17 is_stmt 0 view .LVU86
+ 292 003a 41F4A051 		orr	r1, r1, #5120
+ 293 003e 1960     		str	r1, [r3]
+ 192:Core/Src/init.c ****     GPIOB_MODER |= MODER_PB1_OUTPUT;
+ 294              		.loc 1 192 5 is_stmt 1 view .LVU87
+ 295              		.loc 1 192 17 is_stmt 0 view .LVU88
+ 296 0040 42F01402 		orr	r2, r2, #20
+ 297 0044 C3F80024 		str	r2, [r3, #1024]
+ 193:Core/Src/init.c **** 
+ 194:Core/Src/init.c ****     // Входные кнопки - режим INPUT с подтяжкой
+ 195:Core/Src/init.c ****     // BTN1 - PC13 (вход с подтяжкой)
+ 196:Core/Src/init.c ****     GPIOC_PUPDR |= PUPDR_PC13_PULLUP;
+ 298              		.loc 1 196 5 is_stmt 1 view .LVU89
+ 299 0048 D3F80C28 		ldr	r2, [r3, #2060]
+ 300              		.loc 1 196 17 is_stmt 0 view .LVU90
+ 301 004c 42F08062 		orr	r2, r2, #67108864
+ 302 0050 C3F80C28 		str	r2, [r3, #2060]
+ 197:Core/Src/init.c ****     
+ 198:Core/Src/init.c ****     // BTN2 - PB12 (вход с подтяжкой)
+ 199:Core/Src/init.c ****     GPIOB_PUPDR |= PUPDR_PB12_PULLUP;
+ 303              		.loc 1 199 5 is_stmt 1 view .LVU91
+ 304 0054 D3F80C14 		ldr	r1, [r3, #1036]
+ 305              		.loc 1 199 17 is_stmt 0 view .LVU92
+ 306 0058 41F08071 		orr	r1, r1, #16777216
+ 307 005c C3F80C14 		str	r1, [r3, #1036]
+ 200:Core/Src/init.c ****     
+ 201:Core/Src/init.c ****     // BTN3 - PC4 (вход с подтяжкой)
+ 202:Core/Src/init.c ****     GPIOC_PUPDR |= PUPDR_PC4_PULLUP;
+ 308              		.loc 1 202 5 is_stmt 1 view .LVU93
+ 309              		.loc 1 202 17 is_stmt 0 view .LVU94
+ 310 0060 42F48072 		orr	r2, r2, #256
+ 311 0064 C3F80C28 		str	r2, [r3, #2060]
+ 203:Core/Src/init.c ****     
+ 204:Core/Src/init.c ****     // MODE - PA11 (вход с подтяжкой)
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s 			page 10
+
+
+ 205:Core/Src/init.c ****     GPIOA_PUPDR |= PUPDR_PA11_PULLUP;
+ 312              		.loc 1 205 5 is_stmt 1 view .LVU95
+ 313 0068 DA68     		ldr	r2, [r3, #12]
+ 314              		.loc 1 205 17 is_stmt 0 view .LVU96
+ 315 006a 42F48002 		orr	r2, r2, #4194304
+ 316 006e DA60     		str	r2, [r3, #12]
+ 206:Core/Src/init.c ****     
+ 207:Core/Src/init.c ****     disableAllLeds();
+ 317              		.loc 1 207 5 is_stmt 1 view .LVU97
+ 318 0070 FFF7FEFF 		bl	disableAllLeds
+ 319              	.LVL8:
+ 208:Core/Src/init.c **** }
+ 320              		.loc 1 208 1 is_stmt 0 view .LVU98
+ 321 0074 08BD     		pop	{r3, pc}
+ 322              	.L20:
+ 323 0076 00BF     		.align	2
+ 324              	.L19:
+ 325 0078 00300240 		.word	1073885184
+ 326 007c 00000240 		.word	1073872896
+ 327              		.cfi_endproc
+ 328              	.LFE3:
+ 330              		.global	mode_prev
+ 331              		.section	.bss.mode_prev,"aw",%nobits
+ 334              	mode_prev:
+ 335 0000 00       		.space	1
+ 336              		.global	btn3_prev
+ 337              		.section	.bss.btn3_prev,"aw",%nobits
+ 340              	btn3_prev:
+ 341 0000 00       		.space	1
+ 342              		.global	btn2_prev
+ 343              		.section	.bss.btn2_prev,"aw",%nobits
+ 346              	btn2_prev:
+ 347 0000 00       		.space	1
+ 348              		.global	btn1_prev
+ 349              		.section	.bss.btn1_prev,"aw",%nobits
+ 352              	btn1_prev:
+ 353 0000 00       		.space	1
+ 354              		.global	led_visible
+ 355              		.section	.bss.led_visible,"aw",%nobits
+ 356              		.align	2
+ 359              	led_visible:
+ 360 0000 000000   		.space	3
+ 361              		.global	delay_counters
+ 362              		.section	.bss.delay_counters,"aw",%nobits
+ 363              		.align	2
+ 366              	delay_counters:
+ 367 0000 00000000 		.space	12
+ 367      00000000 
+ 367      00000000 
+ 368              		.global	state_array
+ 369              		.section	.bss.state_array,"aw",%nobits
+ 370              		.align	2
+ 373              	state_array:
+ 374 0000 000000   		.space	3
+ 375              		.global	current_order_index
+ 376              		.section	.bss.current_order_index,"aw",%nobits
+ 379              	current_order_index:
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s 			page 11
+
+
+ 380 0000 00       		.space	1
+ 381              		.global	current_freq_index
+ 382              		.section	.bss.current_freq_index,"aw",%nobits
+ 383              		.align	2
+ 386              	current_freq_index:
+ 387 0000 000000   		.space	3
+ 388              		.global	blink_delays
+ 389              		.section	.rodata.blink_delays,"a"
+ 390              		.align	2
+ 393              	blink_delays:
+ 394 0000 10270000 		.word	10000
+ 395 0004 905F0100 		.word	90000
+ 396 0008 20BF0200 		.word	180000
+ 397              		.text
+ 398              	.Letext0:
+ 399              		.file 2 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/machine/_default_types.
+ 400              		.file 3 "C:/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/_stdint.h"
+ 401              		.file 4 "Core/Inc/init.h"
+ARM GAS  C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s 			page 12
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 init.c
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:21     .text.disableAllLeds:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:27     .text.disableAllLeds:00000000 disableAllLeds
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:62     .text.disableAllLeds:00000028 $d
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:67     .text.update_states:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:73     .text.update_states:00000000 update_states
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:178    .text.update_states:00000080 $d
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:373    .bss.state_array:00000000 state_array
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:359    .bss.led_visible:00000000 led_visible
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:185    .text.readButton:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:191    .text.readButton:00000000 readButton
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:247    .text.GPIO_Init_All:00000000 $t
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:253    .text.GPIO_Init_All:00000000 GPIO_Init_All
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:325    .text.GPIO_Init_All:00000078 $d
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:334    .bss.mode_prev:00000000 mode_prev
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:335    .bss.mode_prev:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:340    .bss.btn3_prev:00000000 btn3_prev
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:341    .bss.btn3_prev:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:346    .bss.btn2_prev:00000000 btn2_prev
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:347    .bss.btn2_prev:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:352    .bss.btn1_prev:00000000 btn1_prev
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:353    .bss.btn1_prev:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:356    .bss.led_visible:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:366    .bss.delay_counters:00000000 delay_counters
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:363    .bss.delay_counters:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:370    .bss.state_array:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:379    .bss.current_order_index:00000000 current_order_index
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:380    .bss.current_order_index:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:386    .bss.current_freq_index:00000000 current_freq_index
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:383    .bss.current_freq_index:00000000 $d
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:393    .rodata.blink_delays:00000000 blink_delays
+C:\Users\Thx\AppData\Local\Temp\ccRwmUKd.s:390    .rodata.blink_delays:00000000 $d
 
 NO UNDEFINED SYMBOLS
