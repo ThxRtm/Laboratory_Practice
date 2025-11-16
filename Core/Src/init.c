@@ -5,8 +5,20 @@ uint8_t button_to_color[3] = {0, 1, 2};                                 //пер
 uint8_t btn1_prev = 0, btn2_prev = 0, btn3_prev = 0, mode_prev = 0;     //переменные для переброса значений
 uint8_t mode_count = 0;     //кнопарь
 
+// Счётчики количества нажатий на кнопки
+uint32_t btn1_press_count = 0;  // кнопка 1
+uint32_t btn2_press_count = 0;  // кнопка 2
+uint32_t btn3_press_count = 0;  //кнопка 3
+uint32_t mode_press_count = 0;  //кнопка MODE
+// Отдельные переменные для каждого светодиода иначе проблемы были с установкой на STMViewer
+uint8_t led_green = 0;      //1 - горит, а больше и не надо
+uint8_t led_blue = 0;       //1 - горит
+uint8_t led_red = 0;        // 1 - горит
+// Флаг для отладки 
+uint8_t debug_flag = 0;         //отслеживания нажатий
+
 // Функции
-void disableAllLeds(void) {             //изначально выключая всё светодиоды все закидываю в low уровень
+void disableAllLeds(void) {             //изначально выключая всё - светодиоды все закидываю в low уровень
     // Зеленые 
     GPIOA->BSRR = GPIO_BSRR_BR_5;
     GPIOC->BSRR = GPIO_BSRR_BR_5;
@@ -17,7 +29,7 @@ void disableAllLeds(void) {             //изначально выключая 
     GPIOA_BSRR = BSRR_RESET_6;
     GPIOB_BSRR = BSRR_RESET_1;
 }
-//изначально выключая всё светодиоды все закидываю в low уровень
+
 void update_leds(void) {                //обновляю состояния диодов по массиву led_state (состояния)
     // Зелёные светодиоды 
     if (led_state[0]) {
@@ -43,15 +55,24 @@ void update_leds(void) {                //обновляю состояния д
         GPIOA_BSRR = BSRR_RESET_6;
         GPIOB_BSRR = BSRR_RESET_1;
     }
+    
+    // переменную синхронизирую 
+    led_green = led_state[0];
+    led_blue = led_state[1];
+    led_red = led_state[2];
 }
+
 //читаю кнопку по фронту отпущена -> нажата
-uint8_t readButton(uint32_t *idr, uint32_t mask, uint8_t* prevState) {     //указываю не регистр, маска кнопки, указываю на переменную и возвращаю с неё значение
-    uint8_t pressed = !(*idr & mask);           //считываю состояние с регистра, получаю бит с кнопки, инвертирую для подтверждения нажатия
+//указываю на регистр, маска кнопки, указываю на переменную и возвращаю с неё значение
+uint8_t readButton(uint32_t *idr, uint32_t mask, uint8_t* prevState) {    
+    //считываю состояние с регистра, получаю бит с кнопки, инвертирую для подтверждения нажатия 
+    uint8_t pressed = !(*idr & mask);           
     uint8_t result = 0;                         
     if (pressed && !(*prevState)) result = 1;   // если кнопка нажата сейчас и была отпущена, то фронт есть
     *prevState = pressed; //запомнили состояние кнопки для следующей проходки
     return result;
 }
+
 void GPIO_Init_All(void) {
     // Включение тактирования
     RCC_AHB1ENR |= 0x07;
@@ -79,12 +100,6 @@ void GPIO_Init_All(void) {
     GPIOA_PUPDR |= PUPDR_PA11_PULLUP;
     disableAllLeds();
 }
-
-
-
-
-
-
 
 /*
 #include "init.h"

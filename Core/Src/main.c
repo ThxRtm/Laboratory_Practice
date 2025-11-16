@@ -1,23 +1,21 @@
 #include "init.h"
 int main(void) {
     GPIO_Init_All(); // иницилизирую все порты
-    
-    // Инициализация предыдущих состояний (проверка для сдвига групп)
-    btn1_prev = !(GPIOC_IDR & GPIO_PIN_13); //считать текущее состояние BTN1 и инвертируем
-    btn2_prev = !(GPIOB_IDR & GPIO_PIN_12);
+    // Инициализация предыдущих состояний (проверка для СДВиГа групп)
+    btn1_prev = !((uint32_t)GPIOC_IDR & GPIO_PIN_13); //считать текущее состояние BTN1 и инвертируем
+    btn2_prev = !((uint32_t)GPIOB_IDR & GPIO_PIN_12);
     btn3_prev = !(GPIOC->IDR & GPIO_IDR_ID4);
-    mode_prev = !(GPIOA_IDR & GPIO_PIN_11);
-    
+    mode_prev = !((uint32_t)GPIOA_IDR & GPIO_PIN_11);
     update_leds(); // обновление состояния светодиодов
-    
     while (1) {
         // Обработка кнопки MODE
-        if (readButton(&GPIOA_IDR, GPIO_PIN_11, &mode_prev)) {  //обработка с кнопке
+        if (readButton((uint32_t *)&GPIOA_IDR, GPIO_PIN_11, &mode_prev)) {  //обработка с кнопке
+            mode_press_count++;  // Увеличиваем счётчик нажатий MODE
+            debug_flag = 1;      // Флаг для STMViewer
             uint8_t tmp = button_to_color[2];
             button_to_color[2] = button_to_color[1];
             button_to_color[1] = button_to_color[0];
             button_to_color[0] = tmp;
-            
             mode_count++; 
             if (mode_count % 3 == 0) {
                 button_to_color[0] = 0;
@@ -26,31 +24,43 @@ int main(void) {
             }
         }
         
-        // Обработка BTN1 переключаю цвет, который к этой кнопке превязан
-        if (readButton(&GPIOC_IDR, GPIO_PIN_13, &btn1_prev)) {
+        // Обработка BTN1 переключаю цвет, который к этой кнопке привязан
+        if (readButton((uint32_t *)&GPIOC_IDR, GPIO_PIN_13, &btn1_prev)) {
+            btn1_press_count++;  // Увеличиваем счётчик нажатий кнопки 1
+            debug_flag = 2;      // Флаг для STMViewer
+            
             uint8_t color = button_to_color[0];
             led_state[color] = !led_state[color];
+            
             update_leds();
         }
-        
         // Обработка BTN2
-        if (readButton(&GPIOB_IDR, GPIO_PIN_12, &btn2_prev)) {
+        if (readButton((uint32_t *)&GPIOB_IDR, GPIO_PIN_12, &btn2_prev)) {
+            btn2_press_count++;  // Увеличиваем счётчик нажатий кнопки 2
+            debug_flag = 3;      // Флаг для STMViewer
+            
             uint8_t color = button_to_color[1];
             led_state[color] = !led_state[color];
+            
             update_leds();
         }
-        
         // Обработка BTN3
         if (readButton(&GPIOC->IDR, GPIO_IDR_ID4, &btn3_prev)) {
+            btn3_press_count++;  // Увеличиваем счётчик нажатий кнопки 3
+            debug_flag = 4;      // Флаг для STMViewer
+            
             uint8_t color = button_to_color[2];
             led_state[color] = !led_state[color];
+            
             update_leds();
         }
-        
+        debug_flag = 0;  //сбрасываю флаг после обработки всей
         for (int timer = 0; timer < 50000; timer++);
     }
     return 0;
 }
+
+
 
 /*
 #include "init.h"
